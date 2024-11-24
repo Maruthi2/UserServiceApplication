@@ -2,6 +2,9 @@ package com.example.userserviceapplication.security.models;
 
 import com.example.userserviceapplication.models.Role;
 import com.example.userserviceapplication.models.User;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,6 +12,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 //This CustomUserDetails class will act like a User class for Spring Security.
+//@NoArgsConstructor
+@JsonDeserialize
+@Getter
+@Setter
 public class CustomUserDetails implements UserDetails {
     private String username;
     private String password;
@@ -16,7 +23,12 @@ public class CustomUserDetails implements UserDetails {
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;
     private boolean enabled;
-    private List<CustomGrantedAuthority> grantedAuthorities;
+    private List<CustomGrantedAuthority> authorities;
+    private Long userId;
+
+    public CustomUserDetails() {
+
+    }
     public CustomUserDetails(User user) {
         this.username = user.getEmail();
         this.password = user.getHashedPassword();
@@ -24,15 +36,17 @@ public class CustomUserDetails implements UserDetails {
         this.accountNonLocked = true;
         this.credentialsNonExpired = true;
         this.enabled = true;
+        this.userId = user.getId();
+
         //In the granted authorities, we need to add the roles.
-        this.grantedAuthorities = new ArrayList<>();
+        this.authorities = new ArrayList<>();
         for (Role role : user.getRoles()) {
-            grantedAuthorities.add(new CustomGrantedAuthority(role));
+            authorities.add(new CustomGrantedAuthority(role));
         }
     }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return grantedAuthorities;
+        return authorities;
     }
     @Override
     public String getPassword() {
@@ -57,5 +71,8 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+    public Long getUserId() {
+        return userId;
     }
 }

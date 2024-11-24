@@ -3,12 +3,14 @@ package com.example.userserviceapplication.security.services;
 import com.example.userserviceapplication.security.models.CustomUserDetails;
 import com.example.userserviceapplication.models.User;
 import com.example.userserviceapplication.repositories.UserRepository;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 @Service
+@JsonDeserialize
 public class CustomUserDetailsService implements UserDetailsService {
     private UserRepository userRepository;
     public CustomUserDetailsService(UserRepository userRepository) {
